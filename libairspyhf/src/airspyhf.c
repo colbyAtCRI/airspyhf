@@ -35,6 +35,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <pthread.h>
 #include <math.h>
 
+#include <time.h>
+
 #include "iqbalancer.h"
 #include "airspyhf.h"
 #include "airspyhf_commands.h"
@@ -377,7 +379,9 @@ static void* consumer_threadproc(void *arg)
 	uint32_t dropped_buffers;
 	airspyhf_device_t* device = (airspyhf_device_t*) arg;
 	airspyhf_transfer_t transfer;
-
+	time_t startTime;
+	time_t stopTime;
+	
 #ifdef _WIN32
 
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
@@ -413,11 +417,14 @@ static void* consumer_threadproc(void *arg)
 		transfer.sample_count = sample_count;
 		transfer.dropped_samples = (uint64_t) dropped_buffers * (uint64_t) sample_count;
 
+		startTime = time(NULL);
 		if (device->callback(&transfer) != 0)
 		{
 			device->streaming = false;
 		}
-
+		stopTime = time(NULL);
+		printf ("Callback time: %ld\n",stopTime - startTime);
+		
 		pthread_mutex_lock(&device->consumer_mp);
 		device->received_buffer_count--;
 	}
