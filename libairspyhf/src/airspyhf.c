@@ -57,7 +57,7 @@ typedef int bool;
 #define SAMPLES_TO_TRANSFER (1024 * 2)
 #define SERIAL_NUMBER_UNUSED (0)
 #define FILE_DESCRIPTOR_UNUSED (-1)
-#define RAW_BUFFER_COUNT (8)
+#define RAW_BUFFER_COUNT (64)
 #define AIRSPYHF_SERIAL_SIZE (28)
 
 #define MAX_SAMPLERATE_INDEX (100)
@@ -379,8 +379,8 @@ static void* consumer_threadproc(void *arg)
 	uint32_t dropped_buffers;
 	airspyhf_device_t* device = (airspyhf_device_t*) arg;
 	airspyhf_transfer_t transfer;
-	struct timespec startTime;
-	struct timespec stopTime;
+	//struct timespec startTime;
+	//struct timespec stopTime;
 	
 #ifdef _WIN32
 
@@ -417,14 +417,14 @@ static void* consumer_threadproc(void *arg)
 		transfer.sample_count = sample_count;
 		transfer.dropped_samples = (uint64_t) dropped_buffers * (uint64_t) sample_count;
 
-		clock_gettime (CLOCK_REALTIME, &startTime);
+		//clock_gettime (CLOCK_REALTIME, &startTime);
 		if (device->callback(&transfer) != 0)
 		{
 			device->streaming = false;
 		}
-		clock_gettime (CLOCK_REALTIME, &stopTime);
-		long nsec = (stopTime.tv_sec - startTime.tv_sec)*1000000000 + (stopTime.tv_nsec - startTime.tv_nsec);
-		printf ("Callback time: %ld\n",nsec);
+		//clock_gettime (CLOCK_REALTIME, &stopTime);
+		//long nsec = (stopTime.tv_sec - startTime.tv_sec)*1000000000 + (stopTime.tv_nsec - startTime.tv_nsec);
+		//printf ("Callback time: %ld\n",nsec);
 		
 		pthread_mutex_lock(&device->consumer_mp);
 		device->received_buffer_count--;
