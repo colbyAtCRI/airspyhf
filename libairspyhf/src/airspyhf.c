@@ -423,7 +423,7 @@ static void* consumer_threadproc(void *arg)
 			device->streaming = false;
 		}
 		clock_gettime (CLOCK_REALTIME, &stopTime);
-		long nsec = (stopTime.tv_sec - startTime.tv_sec)*1000000000 + (stopTime.tv_nsec - startTime.tv_nsec)
+		long nsec = (stopTime.tv_sec - startTime.tv_sec)*1000000000 + (stopTime.tv_nsec - startTime.tv_nsec);
 		printf ("Callback time: %ld\n",nsec);
 		
 		pthread_mutex_lock(&device->consumer_mp);
